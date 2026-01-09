@@ -296,11 +296,28 @@ function renderCoach() {
   ];
 
   const tasks = buildTasks(focus, minutes, priorities);
+const lesson = getTodayGrammar();
 
-  $("#coach-session").innerHTML = `
-    <h3>Séance (${formatMin(minutes)}) — Focus: ${escapeHtml(focus)}</h3>
-    <ul>${tasks.map(t => `<li>${escapeHtml(t)}</li>`).join("")}</ul>
-  `;
+$("#coach-session").innerHTML = `
+  <h3>Séance (${formatMin(minutes)}) — Focus: ${escapeHtml(focus)}</h3>
+  <ul>${tasks.map(t => `<li>${escapeHtml(t)}</li>`).join("")}</ul>
+
+  <hr style="margin:16px 0">
+
+  <div class="card inner" style="padding:14px">
+    <h3>📚 Leçon de grammaire du jour — ${escapeHtml(lesson.title)}</h3>
+    <p><strong>Règle :</strong> ${escapeHtml(lesson.rule)}</p>
+    <p><strong>Exemple :</strong> ${escapeHtml(lesson.example)}</p>
+    <p><strong>Exercice :</strong> ${escapeHtml(lesson.exercise)}</p>
+
+    <button class="btn" id="btn-show-answer" type="button">Afficher la réponse</button>
+    <p id="lesson-answer" class="muted" style="display:none; margin-top:10px;">
+      ✅ Réponse : <strong>${escapeHtml(lesson.answer)}</strong>
+    </p>
+  </div>
+`;
+
+  
 
   // ✅ also show grammar lesson
   renderGrammarCoach();
@@ -615,3 +632,41 @@ function init() {
 }
 
 init();
+// ================================
+//   C1 GRAMMAR ENGINE (Course)
+// ================================
+const GRAMMAR_PROGRAM = [
+  {
+    title: "Les connecteurs logiques",
+    rule: "Les connecteurs servent à structurer un texte (cause, conséquence, opposition, but).",
+    example: "Bien que l'économie progresse, le chômage reste élevé.",
+    exercise: "Complète : ___ il pleuve, je viendrai.",
+    answer: "Bien que"
+  },
+  {
+    title: "Le subjonctif",
+    rule: "On utilise le subjonctif après certaines expressions de doute, nécessité, émotion.",
+    example: "Il faut que tu fasses attention.",
+    exercise: "Complète : Il est important que tu ___ (être) ponctuelle.",
+    answer: "sois"
+  },
+  {
+    title: "Accords du participe passé",
+    rule: "Le participe passé s'accorde avec le COD placé avant.",
+    example: "Les lettres que j'ai écrites.",
+    exercise: "Complète : Les fautes que j'ai ___ (corriger).",
+    answer: "corrigées"
+  },
+  {
+    title: "Pronoms relatifs",
+    rule: "Qui, que, dont, où servent à relier deux propositions.",
+    example: "Le livre dont je parle est intéressant.",
+    exercise: "Complète : L’entreprise ___ je travaille recrute.",
+    answer: "où"
+  }
+];
+
+function getTodayGrammar() {
+  const day = new Date().getDate();
+  return GRAMMAR_PROGRAM[day % GRAMMAR_PROGRAM.length];
+}
